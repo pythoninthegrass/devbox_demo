@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hello, OKC WebDevs!</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="h-screen">
+  <div class="flex flex-col items-center justify-center h-full">
+    <h1 class="text-8xl text-center mb-8">
+      Hello, OKC WebDevs! 👋
+    </h1>
+    <a href="{{ url_for('meetup') }}">
+      <img src="{{ url_for('static', filename='qr.png') }}" alt="QR Code"
+        class="mx-auto hover:brightness-75 hover:saturate-150">
+    </a>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,9 @@
+version: "0.5"
+is_strict: true
+
+processes:
+  flask:
+   command: flask --app main run --debug
+   working_dir: ./app
+   availability:
+    restart: "always"

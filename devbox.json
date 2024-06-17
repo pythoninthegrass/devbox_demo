@@ -1,0 +1,28 @@
+{
+  "packages": [
+    "python@3.11.9",
+    "python311Packages.pip@latest",
+    "asdf-vm@latest",
+    "gh@latest",
+    "git@latest",
+    "gnumake@latest",
+    "go-task@latest",
+    "nodejs@21.4.0",
+    "openssl@latest",
+    "poetry@latest",
+    "tilt@latest",
+    "uv@latest"
+  ],
+  "env": {
+    "VENV_DIR": ".venv"
+  },
+  "shell": {
+    "init_hook": [
+      "./bootstrap.sh",
+      ". $VENV_DIR/bin/activate"
+    ],
+    "scripts": {
+      "test":  "poetry run pytest"
+    }
+  }
+}
