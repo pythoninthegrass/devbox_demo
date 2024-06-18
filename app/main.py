@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 
+from decouple import config
 from flask import Flask, render_template, make_response, redirect
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-# TODO: migrate to python-decouple
 # connection uri
-db_host = 'localhost'
-db_port = '5432'
-db_name = 'visitors'
-db_user = 'postgres'
-db_pass = 'postgres'
-conn_uri = f"postgresql://{db_name}:{db_pass}@{db_host}:{db_port}/{db_name}"
+db_name = config("DB_NAME")
+db_host = config("DB_URL")
+db_user = config("DB_USER")
+db_pass = config("DB_PASS")
+db_port = config("DB_PORT", default=5432, cast=int)
+conn_uri = f"postgresql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
 
 # app configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = conn_uri
@@ -22,8 +22,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
-class Visitor(db.Model):
-    """Visitor DB model."""
+class Visitors(db.Model):
+    """Visitors DB model."""
     id = db.Column(db.Integer, primary_key=True)
     count = db.Column(db.Integer, nullable=False)
 
@@ -33,11 +33,12 @@ with app.app_context():
     db.create_all()
 
 
+# TODO: less naive visitor counting (user agent, IP, etc.)
 @app.route('/')
 def home():
-    visitor = Visitor.query.first()
+    visitor = Visitors.query.first()
     if not visitor:
-        visitor = Visitor(count=1)
+        visitor = Visitors(count=1)
         db.session.add(visitor)
     else:
         visitor.count += 1
