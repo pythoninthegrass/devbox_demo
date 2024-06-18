@@ -12,23 +12,17 @@
     "poetry":                "latest",
     "tilt":                  "latest",
     "uv":                    "latest"
-    // "postgresql":            "latest",
-    // "glibcLocales": {
-    //   "version":   "latest",
-    //   "platforms": ["x86_64-linux", "aarch64-linux"]
-    // }
   },
   "env": {
-    "VENV_DIR": ".venv",
-    "PG_TYPE": "docker",
-    "PGDATABASE": "vistors"
+    "VENV_DIR": ".venv"
   },
   "shell": {
     "init_hook": [
-      "./bootstrap.sh",
+      "./bootstrap.sh --init",
       ". $VENV_DIR/bin/activate"
     ],
     "scripts": {
+      "export": "poetry export -f requirements.txt --output requirements.txt --without-hashes",
       "test": "poetry run pytest"
     }
   }
