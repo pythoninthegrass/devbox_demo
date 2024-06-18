@@ -7,10 +7,10 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 
 # connection uri
-db_name = config("DB_NAME")
-db_host = config("DB_URL")
-db_user = config("DB_USER")
-db_pass = config("DB_PASS")
+db_name = config("DB_NAME", default="visitors")
+db_host = config("DB_URL", default="localhost")
+db_user = config("DB_USER", default="postgres")
+db_pass = config("DB_PASS", default="postgres")
 db_port = config("DB_PORT", default=5432, cast=int)
 conn_uri = f"postgresql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
 
