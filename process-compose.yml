@@ -9,29 +9,33 @@ processes:
    environment:
     - 'FLASK_APP=main'
     - 'FLASK_DEBUG=True'
-  #  depends_on:
-  #    db:
-  #      condition: "process_started"
+   depends_on:
+     db:
+       condition: "process_healthy"
    availability:
     restart: "on_failure"
-    backoff_seconds: 5    # default: 1
-    # max_restarts: 10    # default: 0 (unlimited)
+    backoff_seconds: 3  # default: 1
+    max_restarts: 5     # default: 0 (unlimited)
 
-  # TODO: debug missing env vars
-  # ! POSTGRES_PASSWORD
   db:
     command: >
       docker run -it --rm \
-        --name "${DB_NAME?}" \
-        -e POSTGRES_DB="${DB_NAME?}" \
-        -e POSTGRES_USER="${DB_USER?}" \
-        -e POSTGRES_PASSWORD="${DB_PASS:-postgres}" \
-        -p "${DB_PORT:-5432}:5432" \
+        --name ${CONTAINER_NAME} \
+        -e POSTGRES_INITDB_ARGS="--locale-provider=icu --icu-locale=en_US.UTF-8" \
+        -e POSTGRES_DB=${POSTGRES_DB} \
+        -e POSTGRES_USER=${POSTGRES_USER} \
+        -e POSTGRES_PASSWORD=${DB_PASS} \
+        -p ${DB_PORT}:5432 \
         postgres:16.3-alpine3.20
     environment:
-      - 'DB_NAME=postgres'
-      - 'DB_USER=postgres'
-      - 'DB_PASS=postgres'
+      - POSTGRES_DB=${DB_NAME?}
+      - POSTGRES_USER=${DB_USER?}
+      - POSTGRES_PASSWORD=${DB_PASS?}
+      - DB_PORT=${DB_PORT:-5432}
+    readiness_probe:
+      exec:
+        command: |
+          timeout 30s bash -c "until docker exec ${CONTAINER_NAME} pg_isready; do sleep 3; done"
     is_tty: true
     shutdown:
-      command: "docker stop devbox-postgres"
+      command: "docker stop ${CONTAINER_NAME}"
