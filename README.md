@@ -13,6 +13,6 @@ Devbox demo for the [OKC WebDevs Tool Talks](https://www.meetup.com/okcwebdevs/e
 4. Navigate to [localhost:5000](http://localhost:5000) in your browser
 
 ## TODO
-* Fix Tailwind CSS styling
+* ~~Fix Tailwind CSS styling~~
 * Add a database
 * Add CI/CD using `devbox`

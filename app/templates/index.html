@@ -15,8 +15,9 @@
     </h1>
     <a href="{{ url_for('meetup') }}">
       <img src="{{ url_for('static', filename='qr.png') }}" alt="QR Code"
-        class="mx-auto hover:brightness-75 hover:saturate-150">
+      class="mx-auto hover:brightness-75 hover:saturate-150">
     </a>
+    <p class="text-4xl">Visitor count: {{ visitor_count }}</p>
   </div>
 </body>
 

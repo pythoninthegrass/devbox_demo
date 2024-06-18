@@ -1,20 +1,27 @@
 {
-  "packages": [
-    "python@3.11.9",
-    "python311Packages.pip@latest",
-    "asdf-vm@latest",
-    "gh@latest",
-    "git@latest",
-    "gnumake@latest",
-    "go-task@latest",
-    "nodejs@21.4.0",
-    "openssl@latest",
-    "poetry@latest",
-    "tilt@latest",
-    "uv@latest"
-  ],
+  "packages": {
+    "python":                "3.11.9",
+    "python311Packages.pip": "latest",
+    "asdf-vm":               "latest",
+    "gh":                    "latest",
+    "git":                   "latest",
+    "gnumake":               "latest",
+    "go-task":               "latest",
+    "nodejs":                "21.4.0",
+    "openssl":               "latest",
+    "poetry":                "latest",
+    "tilt":                  "latest",
+    "uv":                    "latest"
+    // "postgresql":            "latest",
+    // "glibcLocales": {
+    //   "version":   "latest",
+    //   "platforms": ["x86_64-linux", "aarch64-linux"]
+    // }
+  },
   "env": {
-    "VENV_DIR": ".venv"
+    "VENV_DIR": ".venv",
+    "PG_TYPE": "docker",
+    "PGDATABASE": "vistors"
   },
   "shell": {
     "init_hook": [
@@ -22,7 +29,7 @@
       ". $VENV_DIR/bin/activate"
     ],
     "scripts": {
-      "test":  "poetry run pytest"
+      "test": "poetry run pytest"
     }
   }
 }
