@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1091,SC2046,SC2086
 
 cat << 'DESCRIPTION' >/dev/null
 Alternative to devbox's inline `init_hook` for more complicated bootstrapping
@@ -16,15 +16,64 @@ else
 	tld="${script_dir}"
 fi
 
-# set the venv directory
-if [ -z "$VENV_DIR" ]; then
-	VENV_DIR="${tld}/.venv"
-fi
+# source .env file skipping commented lines
+dot_env() {
+	env_file="${tld}/.env"
+	if [ -f "${env_file}" ]; then
+		export $(grep -v '^#' "${env_file}" | xargs)
+	fi
+}
 
-# create the venv
-uv venv "${VENV_DIR}" --allow-existing
+# setup venv
+activate_venv() {
+	if [ -z "$VENV_DIR" ]; then
+		VENV_DIR="${tld}/.venv"
+	fi
+	uv venv "${VENV_DIR}" --allow-existing
+	source "${VENV_DIR}/bin/activate"
+}
+
 
 # install requirements
-[[ -e "${tld}/requirements.txt"  ]] && uv pip install -r requirements.txt
+install_deps() {
+	[[ -e "${tld}/requirements.txt"  ]] && uv pip install -r requirements.txt
+}
+
+main() {
+	if [ $# -eq 0 ]; then
+		dot_env
+		activate_venv
+		install_deps
+	else
+		while [[ $# -gt 0 ]]; do
+			key="$1"
+			case $key in
+				-i|--init)
+					dot_env
+					activate_venv
+					install_deps
+					shift
+					;;
+				-e|--env)
+					dot_env
+					shift
+					;;
+				--venv)
+					activate_venv
+					shift
+					;;
+				--install)
+					install_deps
+					shift
+					;;
+				*)
+					echo "Invalid argument: $key"
+					exit 1
+					;;
+			esac
+		done
+	fi
+}
+main "$@"
 
 exit 0
