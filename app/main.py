@@ -7,8 +7,8 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 
 # connection uri
-db_name = config("DB_NAME", default="postgres")
 db_host = config("DB_URL", default="localhost")
+db_name = config("DB_NAME", default="postgres")
 db_user = config("DB_USER", default="postgres")
 db_pass = config("DB_PASS", default="postgres")
 db_port = config("DB_PORT", default=5432, cast=int)
