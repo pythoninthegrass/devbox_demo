@@ -14,7 +14,7 @@ processes:
        condition: "process_healthy"
    availability:
     restart: "always"
-    backoff_seconds: 3  # default: 1
+    backoff_seconds: 5  # default: 1
     max_restarts: 0     # default: 0 (unlimited)
 
   db:
@@ -28,8 +28,9 @@ processes:
         -p ${DB_PORT}:5432 \
         postgres:16.3-alpine3.20
     environment:
-      - POSTGRES_DB=${DB_NAME?}
-      - POSTGRES_USER=${DB_USER?}
+      - CONTAINER_NAME=${CONTAINER_NAME:-devbox-postgres}
+      - POSTGRES_DB=${DB_NAME:-postgres}
+      - POSTGRES_USER=${DB_USER:-postgres}
       - POSTGRES_PASSWORD=${DB_PASS?}
       - DB_PORT=${DB_PORT:-5432}
     readiness_probe:
