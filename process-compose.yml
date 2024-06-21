@@ -11,7 +11,7 @@ processes:
     - 'FLASK_DEBUG=True'
    depends_on:
      db:
-       condition: "process_healthy"
+       condition: "process_started"
    availability:
     restart: "always"
     backoff_seconds: 5  # default: 1
@@ -19,7 +19,7 @@ processes:
 
   db:
     command: >
-      docker run -it --rm \
+      docker run --rm \
         --name ${CONTAINER_NAME} \
         -e POSTGRES_INITDB_ARGS="--locale-provider=icu --icu-locale=en_US.UTF-8" \
         -e POSTGRES_DB=${POSTGRES_DB} \
@@ -37,6 +37,6 @@ processes:
       exec:
         command: |
           timeout 30s bash -c "until docker exec ${CONTAINER_NAME} pg_isready; do sleep 3; done"
-    is_tty: true
+    is_tty: false
     shutdown:
       command: "docker stop ${CONTAINER_NAME}"
