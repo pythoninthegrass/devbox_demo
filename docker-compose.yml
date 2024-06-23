@@ -1,0 +1,25 @@
+services:
+  devbox:
+    container_name: mydevbox
+    hostname: devbox
+    platform: linux/arm64/v8  # linux/amd64 / linux/arm64/v8
+    tty: true                 # false for `entrypoint` in Dockerfile
+    stdin_open: true          # false for `entrypoint` in Dockerfile
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        - DEBIAN_FRONTEND=noninteractive
+    # environment:
+    networks:
+      - devbox
+    # ports:
+    #   - "8000:8000/tcp"
+    volumes:
+      - ./:${WORKDIR:-/code}
+    working_dir: ${WORKDIR:-/code}
+    command: ["devbox", "shell"]
+
+networks:
+  devbox:
+    driver: bridge
