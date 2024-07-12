@@ -22,38 +22,53 @@ env_file="${tld}/.env"
 logged_in_home=$(eval echo "~${logged_in_user}")
 
 install_shim() {
-    mkdir -p "${logged_in_home}/.local/bin"
-    ln -s "${script_dir}/devbox" "${logged_in_home}/.local/bin/devbox"
+	mkdir -p "${logged_in_home}/.local/bin"
+	ln -s "${script_dir}/devbox" "${logged_in_home}/.local/bin/devbox"
+}
+
+uninstall_shim() {
+	if [ -f "${logged_in_home}/.local/bin/devbox" ]; then
+		echo "Removing devbox shim"
+		rm -f "${logged_in_home}/.local/bin/devbox"
+	else
+		echo "devbox shim not found"
+	fi
 }
 
 main() {
-    # cap infinite recursion by limiting SHLVL
-    if [ "${SHLVL}" -gt 10 ]; then
-        echo "Error: Too many nested shells, stopping to prevent infinite loop."
-        exit 1
-    fi
+    # print deprecation notice
+    echo -e "This repo is subject to drift.\n\nThe maintained gist is at https://gist.github.com/pythoninthegrass/aba9e766f881d47aea64f3f38c7c2118"
 
-    if [ $# -eq 0 ]; then
-        devbox
-    else
-        case $1 in
-            -i|--install)
-                install_shim
-                ;;
-            shell|run)
-                devbox "$@"
-                ;;
-            services)
-                # append `--env-file` to `devbox services` command
-                if [ -f "${env_file}" ] && [ -s "${env_file}" ]; then
-                    set -- "$1" "--env-file" "${env_file}" "${@:2}"
-                fi
-                devbox "$@"
-                ;;
-            *)
-                devbox "$@"
-                ;;
-        esac
-    fi
+	# cap infinite recursion by limiting SHLVL
+	if [ "${SHLVL}" -gt 10 ]; then
+		echo "Error: Too many nested shells, stopping to prevent infinite loop."
+		exit 1
+	fi
+
+	if [ $# -eq 0 ]; then
+		devbox
+	else
+		case $1 in
+			-i|--install)
+				install_shim
+				;;
+			-u|--uninstall)
+				uninstall_shim
+				;;
+			shell|run)
+				devbox "$@"
+				;;
+			services)
+				# append `--env-file` to `devbox services` command
+				if [ -f "${env_file}" ] && [ -s "${env_file}" ]; then
+					set -- "$1" "--env-file" "${env_file}" "${@:2}"
+				fi
+				devbox "$@"
+				;;
+			*)
+				devbox "$@"
+				;;
+		esac
+	fi
 }
 main "$@"
