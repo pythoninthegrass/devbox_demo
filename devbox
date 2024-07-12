@@ -33,11 +33,6 @@ main() {
         exit 1
     fi
 
-    # check for .env file
-    if [ -f "${env_file}" ] && [ -s "${env_file}" ]; then
-        set -- "$1" "--env-file" "${env_file}" "${@:2}"
-    fi
-
     if [ $# -eq 0 ]; then
         devbox
     else
@@ -46,6 +41,13 @@ main() {
                 install_shim
                 ;;
             shell|run)
+                devbox "$@"
+                ;;
+            services)
+                # append `--env-file` to `devbox services` command
+                if [ -f "${env_file}" ] && [ -s "${env_file}" ]; then
+                    set -- "$1" "--env-file" "${env_file}" "${@:2}"
+                fi
                 devbox "$@"
                 ;;
             *)
